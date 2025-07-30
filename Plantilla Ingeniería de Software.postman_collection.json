@@ -1,0 +1,667 @@
+{
+	"info": {
+		"_postman_id": "dd1e4c15-26c3-4a97-9462-89454e68cd55",
+		"name": "Plantilla Ingeniería de Software",
+		"description": "# 🚀 Comienza aquí\n\nEsta documentación te guiará como hacer una petición a cada endpoint con su respecto método HTTP (GET, POST, PUT, PATCH O DELETE), como tambien a definir variables de entorno y pruebas.\n\n## 🔖 Cómo usar esta plantilla\n\n#### **Paso 1: Envía solicitudes**\n\nLas APIs RESTful te permiten realizar operaciones CRUD utilizando los métodos HTTP POST, GET, PUT, PATCH, DELETE.\n\nEsta colección contiene cada uno de estos tipos de solicitud. Abre cada solicitud y haz clic en \"Enviar\" para ver ver qué sucede.\n\n#### **Paso 2: Observa las respuestas**\n\nRevisa la pestaña de respuestas para verificar el código de estado (200 OK), el tiempo de respuesta y el tamaño.\n\n#### **Paso 3: Envía nuevos datos en el cuerpo de la solicitud (Body)**\n\nActualiza o agrega nuvos datos en el campo \"Body\" de la solicitud POST. Normalmente, los datos del cuerpo también se utilizan en las solicitues del tipo PUT o PATCH.\n\n``` json\n{\n    \"key\": \"value\"\n}\n\n ```\n\n#### **Pas 4: Actualiza la variable**\n\nLas variables te permiten almacenar y reutilizar valores en Postman. Hemos creado dos variables llamada `URL_LOCAL` con la dirección que utilizaremos para realizar peticiones de forma local y otra llamada `URL_PROD` que sería la URL que utilizaremos cuando hayamos desplegado nuestro proyecto a los servidores de la Facultad de Ciencias Empresariales.\n\n#### **Paso 5: Agrega pruebas en la pestaña \"Scripts\"**\n\nAgregar pruebas a tus solicitudes puede ayudarte a c**onfirmar que tu API está funcionando como se espera**. Puedes escribir scripts de prueba en JavaScript y ver los resultados en la pestaña \"Test Results\".\n\n## 💡Documentación oficial puede ayudar\n\n[Ejemplos de pruebas básicas de API (Seleccionar espacio de trabajo).](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Documentación de API](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Métodos de autorización](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30810921"
+	},
+	"item": [
+		{
+			"name": "Local",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// El mejor de los casos\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"OK\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Content-Type is present\", function () {\r",
+											"    pm.response.to.have.header(\"Content-Type\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Testeo respuesta post-petición\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status).to.eql(\"Success\");\r",
+											"    pm.expect(jsonData.message).to.eql(\"Inicio de sesión exitoso\");\r",
+											"    pm.expect(jsonData.data.token).to.be.a('string');\r",
+											"\r",
+											"    if(jsonData.data && jsonData.data.token) {\r",
+											"        pm.environment.set(\"authToken\", jsonData.data.token);\r",
+											"        console.log(\"Token guardado exitosamente en el entorno: \", jsonData.data.token);\r",
+											"    } else {\r",
+											"        console.error(\"No se encontró el token en la respuesta.\");\r",
+											"    }\r",
+											"});\r",
+											"\r",
+											"const token = pm.environment.get(\"authToken\");\r",
+											"console.log(\"Token extraido: \", token)\r",
+											"\r",
+											"// Algunos casos errones\r",
+											"/*\r",
+											"pm.test(\"Código de estado 400\", () => {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Mensaje de validación correo\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.details).to.include(\"El correo electrónico no puede estar vacío.\");\r",
+											"});\r",
+											"*/"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"administrador2024@gmail.cl\",\r\n    \"password\": \"admin1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/auth/login",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "- Permite a los usuarios autenticarse mediante credenciales válidas.\n    \n- Devuelve un token de acceso para realizar peticiones autenticadas a la API.\n    \n- Respuesta esperada (200 OK):\n    \n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Inicio de sesión exitoso\",\n    \"data\": {\n        \"token\": \"<token>\"\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Register",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"El código de estado es 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"La respuesta contiene un mensaje de éxito\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status).to.eql(\"Success\");\r",
+											"    pm.expect(jsonData.message).to.eql(\"Usuario registrado con éxito\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Cuerpo de la solicitud contiene todos los campos requeridos\", () => {\r",
+											"    const requestData = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+											"    pm.expect(requestData).to.have.property(\"nombreCompleto\");\r",
+											"    pm.expect(requestData).to.have.property(\"rut\");\r",
+											"    pm.expect(requestData).to.have.property(\"email\");\r",
+											"    pm.expect(requestData).to.have.property(\"password\");\r",
+											"\r",
+											"    // Valida que los datos no estén vacíos\r",
+											"    pm.expect(requestData.nombreCompleto).to.not.be.empty;\r",
+											"    pm.expect(requestData.rut).to.not.be.empty;\r",
+											"    pm.expect(requestData.email).to.not.be.empty;\r",
+											"    pm.expect(requestData.password).to.not.be.empty;\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response time is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code name has string\", function () {\r",
+											"    pm.response.to.have.status(\"Created\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Encabezados presentes y correctos\", () => {\r",
+											"    pm.response.to.have.header(\"Content-Type\", \"application/json; charset=utf-8\");\r",
+											"});\r",
+											"\r",
+											"\r",
+											"var template = `\r",
+											"<style type=\"text/css\">\r",
+											"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+											"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+											"    .tftable tr {background-color:#ffffff;}\r",
+											"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+											"    .tftable tr:hover {background-color:#e0ffff;}\r",
+											"</style>\r",
+											"\r",
+											"<table class=\"tftable\" border=\"1\">\r",
+											"    <tr>\r",
+											"        <th>Status</th>\r",
+											"        <th>Message</th>\r",
+											"    </tr>\r",
+											"    <tr>\r",
+											"        <td>{{response.status}}</td>\r",
+											"        <td>{{response.message}}</td>\r",
+											"    </tr>\r",
+											"</table>\r",
+											"`;\r",
+											"\r",
+											"function constructVisualizerPayload() {\r",
+											"    return {response: pm.response.json()}\r",
+											"}\r",
+											"\r",
+											"pm.visualizer.set(template, constructVisualizerPayload());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nombreCompleto\": \"Diego Salazar Jara\",\r\n    \"rut\": \"24.308.770-5\",\r\n    \"email\": \"diego2024@gmail.cl\",\r\n    \"password\": \"diego1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/auth/register",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								},
+								"description": "- Permite al usuario poder registrarse.\n    \n- Los datos para poder registrarse son los siguientes:\n    \n    - Nombre completo de la persona -> \"nombreCompleto\".\n        \n    - Rut de la persona -> \"rut\".\n        \n    - Correo electrónico de la persona -> \"email\".\n        \n    - Contraseña segura de la cuenta de usuario -> \"password\".\n        \n- Respuesta esperada (201 Created):\n    \n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Usuario registrado con éxito\",\n    \"data\": {\n        \"nombreCompleto\": \"Diego Salazar Jara\",\n        \"rut\": \"24.308.770-5\",\n        \"email\": \"diego2024@gmail.cl\",\n        \"rol\": \"usuario\",\n        \"id\": 9,\n        \"createdAt\": \"2024-11-23T07:15:19.504Z\",\n        \"updatedAt\": \"2024-11-23T07:15:19.504Z\"\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Código de estado 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Mensaje de éxito en el logout\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Sesión cerrada exitosamente\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"La cookie 'jwt' ha sido eliminada\", () => {\r",
+											"    const cookieJar = pm.cookies.jar();\r",
+											"    cookieJar.getAll(pm.request.url, (error, cookies) => {\r",
+											"        if (error) {\r",
+											"            console.error(\"Error al obtener las cookies:\", error);\r",
+											"            return;\r",
+											"        }\r",
+											"        pm.expect(cookies).to.not.have.property(\"jwt\");\r",
+											"    });\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/auth/logout",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								},
+								"description": "- Permite a un usuario poder cerrar la sesión actual.\n    \n- Devuelve los siguientes datos:\n    \n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Sesión cerrada exitosamente\",\n    \"data\": {}\n}\n\n ```"
+							},
+							"response": []
+						}
+					],
+					"description": "Incluye las peticiones relacionadas con la autenticación y autorización de usuarios, como inicio de sesión, registro y cierre de sesión."
+				},
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Código de estado 200 para solicitud exitosa\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Respuesta contiene los detalles del usuario\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData).to.have.property(\"status\", \"Success\");\r",
+											"    pm.expect(jsonData).to.have.property(\"data\");\r",
+											"        pm.expect(jsonData.data).to.have.property(\"id\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"nombreCompleto\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"rut\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"email\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"rol\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"createdAt\");\r",
+											"    pm.expect(jsonData.data).to.have.property(\"updatedAt\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Tiempo de respuesta menor a 500ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+											"});\r",
+											"\r",
+											"// pm.test(\"Código de estado 401 para token expirado\", () => {\r",
+											"//     pm.response.to.have.status(401);\r",
+											"// });\r",
+											"\r",
+											"// pm.test(\"Mensaje de error para token expirado\", () => {\r",
+											"//     const jsonData = pm.response.json();\r",
+											"//     pm.expect(jsonData.message).to.eql(\"No tienes permiso para acceder a este recurso\");\r",
+											"//     pm.expect(jsonData.details.info).to.eql(\"jwt expired\");\r",
+											"// });\r",
+											"\r",
+											"pm.test(\"El parámetro RUT está presente y es válido\", () => {\r",
+											"    const queryParams = pm.request.url.query.toObject();\r",
+											"    pm.expect(queryParams).to.have.property(\"rut\");\r",
+											"    pm.expect(queryParams.rut).to.match(\r",
+											"        /^(?:(?:[1-9]\\d{0}|[1-2]\\d{1})(\\.\\d{3}){2}|[1-9]\\d{6}|[1-2]\\d{7}|29\\.999\\.999|29999999)-[\\dkK]$/\r",
+											"        ); // Patrón de validación de RUT\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/user/detail/?rut=21.308.770-3",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"user",
+										"detail",
+										""
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "9",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "diego2024@gmail.cl",
+											"disabled": true
+										},
+										{
+											"key": "rut",
+											"value": "21.308.770-3"
+										}
+									]
+								},
+								"description": "Este endpoint permite a los administradores recuperar información detallada de un usuario específico. Se puede buscar al usuario mediante los siguientes parámetros:\n\n- `id`: Identificador único del usuario.\n    \n- `rut`: Registro único tributario.\n    \n- `email`: Correo electrónico registrado.\n    \n\n**Algunos requisitos:**\n\n- Autenticación: Es necesario enviar un token JWT válido en el encabezado de la solicitud.\n    \n- Autorización: Solo los administradores tienen permisos para acceder a este recurso.\n    \n\n**Ejemplo de respuesta esperada al realizar la solicitud:**\n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Usuario encontrado\",\n    \"data\": {\n        \"id\": 9,\n        \"nombreCompleto\": \"Diego Salazar Jara\",\n        \"rut\": \"24.308.770-5\",\n        \"email\": \"diego2024@gmail.cl\",\n        \"rol\": \"usuario\",\n        \"createdAt\": \"2024-11-23T07:15:19.504Z\",\n        \"updatedAt\": \"2024-11-23T07:15:19.504Z\"\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Get users",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response has status: Success\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.status).to.eql(\"Success\");",
+											"});",
+											"",
+											"pm.test(\"Message is 'Usuarios encontrados'\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql(\"Usuarios encontrados\");",
+											"});",
+											"",
+											"pm.test(\"Data is an array and not empty\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.data).to.be.an(\"array\").that.is.not.empty;",
+											"});",
+											"",
+											"pm.test(\"Each user has required fields\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    jsonData.data.forEach((user) => {",
+											"        pm.expect(user).to.have.property(\"id\");",
+											"        pm.expect(user).to.have.property(\"nombreCompleto\");",
+											"        pm.expect(user).to.have.property(\"rut\");",
+											"        pm.expect(user).to.have.property(\"email\");",
+											"        pm.expect(user).to.have.property(\"rol\");",
+											"        pm.expect(user).to.have.property(\"createdAt\");",
+											"        pm.expect(user).to.have.property(\"updatedAt\");",
+											"    });",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL_LOCAL}}/user/",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"user",
+										""
+									]
+								},
+								"description": "- Este endpoint permite a los administradores obtener la información de todos los usuarios.\n    \n- Algunos requisitos:\n    \n    - Autenticación: Es necesario enviar un token JWT válido en el encabezado de la solicitud.\n        \n    - Autorización: Solo los administradores tienen permisos para acceder a este recurso.\n        \n- Respuesta esperada al realizar la peticion:\n    \n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Usuarios encontrados\",\n    \"data\": [\n        {\n            \"id\": 1,\n            \"nombreCompleto\": \"Diego Alexis Salazar Jara\",\n            \"rut\": \"21.308.770-3\",\n            \"email\": \"administrador2024@gmail.cl\",\n            \"rol\": \"administrador\",\n            \"createdAt\": \"2024-11-23T07:09:12.426Z\",\n            \"updatedAt\": \"2024-11-23T07:09:12.426Z\"\n        },\n        .\n        .\n        .\n        {\n            \"id\": 9,\n            \"nombreCompleto\": \"Diego Salazar Jara\",\n            \"rut\": \"24.308.770-5\",\n            \"email\": \"diego2024@gmail.cl\",\n            \"rol\": \"usuario\",\n            \"createdAt\": \"2024-11-23T07:15:19.504Z\",\n            \"updatedAt\": \"2024-11-23T07:15:19.504Z\"\n        }\n    ]\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Update user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Response status is 'Success'\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status).to.eql(\"Success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Message is 'Usuario modificado correctamente'\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Usuario modificado correctamente\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Updated user data matches request body\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    var requestBody = pm.request.body.raw ? JSON.parse(pm.request.body.raw) : {};\r",
+											"    \r",
+											"    pm.expect(jsonData.data.nombreCompleto).to.eql(requestBody.nombreCompleto);\r",
+											"    pm.expect(jsonData.data.rut).to.eql(requestBody.rut);\r",
+											"    pm.expect(jsonData.data.email).to.eql(requestBody.email);\r",
+											"    pm.expect(jsonData.data.rol).to.eql(requestBody.rol);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nombreCompleto\": \"Diego Alexis Salazar Jara\",\n    \"rut\": \"26.308.770-5\",\n    \"email\": \"diegosalazar2024@gmail.cl\",\n    \"rol\": \"usuario\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/user/detail/?rut=24.308.770-5",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"user",
+										"detail",
+										""
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "9",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "diego2024@gmail.cl",
+											"disabled": true
+										},
+										{
+											"key": "rut",
+											"value": "24.308.770-5"
+										}
+									]
+								},
+								"description": "Este endpoint permite actualizar información específica de un usuario ya existente en el sistema. Se utiliza el método `PATCH`, el cual está diseñado para modificar solo los campos proporcionados en la solicitud, sin necesidad de sobreescribir toda la entidad.\n\nSe puede modificar un usuario mediante los siguientes parámetros:\n\n- `id`: Identificador único del usuario.\n    \n- `rut`: Registro único tributario.\n    \n- `email`: Correo electrónico registrado.\n    \n\n**Algunos requisitos:**\n\n- Autenticación: Es necesario enviar un token JWT válido en el encabezado de la solicitud.\n    \n- Autorización: Solo los administradores tienen permisos para acceder a este recurso.\n    \n\nRespuesta esperada al realizar la solicitud:\n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Usuario modificado correctamente\",\n    \"data\": {\n        \"id\": 9,\n        \"nombreCompleto\": \"Diego Alexis Salazar Jara\",\n        \"rut\": \"26.308.770-5\",\n        \"email\": \"diegosalazar2024@gmail.cl\",\n        \"rol\": \"usuario\",\n        \"createdAt\": \"2024-11-23T07:15:19.504Z\",\n        \"updatedAt\": \"2024-11-23T08:39:08.299Z\"\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Código de estado 200 para eliminación exitosa\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Mensaje de éxito para eliminación\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status).to.eql(\"Success\");\r",
+											"    pm.expect(jsonData.message).to.eql(\"Usuario eliminado correctamente\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Tiempo de respuesta menor a 500ms\", () => {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"const sendGet = {\r",
+											"    url: \"http://localhost:3000/api/user/detail?rut=26.308.770-5\",\r",
+											"    method: \"GET\",\r",
+											"    header: {\r",
+											"        Authorization: `Bearer {{authToken}}`\r",
+											"    }\r",
+											"}\r",
+											"\r",
+											"pm.sendRequest(sendGet, (error, response) => {\r",
+											"    if (error) {\r",
+											"        console.log(\"Error al hacer la petición\", error);\r",
+											"    }\r",
+											"    console.log(\"Petición exitosa: \", response)\r",
+											"})\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_LOCAL}}/user/detail/?rut=26.308.770-5",
+									"host": [
+										"{{URL_LOCAL}}"
+									],
+									"path": [
+										"user",
+										"detail",
+										""
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "9",
+											"disabled": true
+										},
+										{
+											"key": "email",
+											"value": "diegosalazar2024@gmail.cl",
+											"disabled": true
+										},
+										{
+											"key": "rut",
+											"value": "26.308.770-5"
+										}
+									]
+								},
+								"description": "Este endpoint permite eliminar un usuario ya existente en el sistema. Se utiliza el método `DELETE`, el cual está diseñado para modificar solo los campos proporcionados en la solicitud.\n\nSe puede eliminar un usuario mediante los siguientes parámetros:\n\n- `id`: Identificador único del usuario.\n    \n- `rut`: Registro único tributario.\n    \n- `email`: Correo electrónico registrado.\n    \n\n**Algunos requisitos:**\n\n- Autenticación: Es necesario enviar un token JWT válido en el encabezado de la solicitud.\n    \n- Autorización: Solo los administradores tienen permisos para acceder a este recurso.\n    \n\nRespuesta esperada al realizar la solicitud:\n\n``` json\n{\n    \"status\": \"Success\",\n    \"message\": \"Usuario eliminado correctamente\",\n    \"data\": {\n        \"nombreCompleto\": \"Didudo Salazar Jara\",\n        \"rut\": \"29.999.999-9\",\n        \"email\": \"didudo2024@gmail.cl\",\n        \"rol\": \"usuario\",\n        \"createdAt\": \"2024-11-23T07:14:57.475Z\",\n        \"updatedAt\": \"2024-11-23T07:14:57.475Z\"\n    }\n}\n\n ```"
+							},
+							"response": []
+						}
+					],
+					"description": "1. Propósito: Manejo de la información y las acciones relacionadas con los usuarios. Solo los **administradores** pueden ejecutar ciertas acciones específicas.\n    \n2. Endpoins principales:\n    \n    1. GET `/user/detail/?key=value`: Obtiene la información de un usuario específico utilizando una query (`id`, `rut` o `email`).\n        \n    2. GET `/user/`: Obtiene la información de todos los usuarios.\n        \n    3. PATCH `/user/detail/?key=value`: Actualiza la información de un usuario.\n        \n    4. DELETE `/user/detail/?key=value`: Elimina a un usuario del sistema.\n        \n3. Restricción para cada endpoint: Solo el administrador puede realizar esta petición, y debe estar autenticado con un token válido."
+				}
+			],
+			"description": "Contiene todas las peticiones necesarias para probar y depurar el proyecto en un entorno local. Las peticiones incluidas están orientadas a validar la funcionalidad de cada módulo de la API antes de su despliegue."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
